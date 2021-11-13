@@ -1,7 +1,7 @@
 # EZ-Graph
 EZ Graph is a GUI that allows users to make and train neural networks without writing a single line of code. 
 
-# Dependancies
+# Requirements
 * python 3
 * pandas
 * numpy (to run generated scripts)
