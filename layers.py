@@ -1,12 +1,12 @@
-import gi
+import gi # used for GTK import
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+from gi.repository import Gtk # used for gtk elements
 
-layers_list = []
-CurrentLayerType = None
+CurrentLayerType = None # current input data type
+layers_list = [] # list of all layers
 
-class ListBoxRowWithData(Gtk.ListBoxRow):
+class ListBoxRowWithData(Gtk.ListBoxRow): # creates list of all possible input data types
     def __init__(self, data):
         super().__init__()
         self.data = data
@@ -17,21 +17,21 @@ class LayerWindow(Gtk.Window):
     def __init__(self):
         super().__init__(title="Make Model")
 
-        self.box = Gtk.Box(spacing=6)
+        self.box = Gtk.Box(spacing=6) # box for the rest of the content to be contained in
         self.add(self.box)
 
-        listbox = Gtk.ListBox()
+        listbox = Gtk.ListBox() # left hand column, this contains all of the options for the current layer type selected
         listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.box.pack_start(listbox, True, True, 0)
 
-        def listboxset(type):
+        def listboxset(type): # function that sets / resets the left hand column
             children = listbox.get_children()
-            for element in children:
+            for element in children: # empties the listbox so new content can fill it
                 listbox.remove(element)
-            if type == "Input":
-                self.CurrentLayerType = "Input"
+            if type == "Input": # if the selected type is "Input"
+                self.CurrentLayerType = "Input" # sets the variable for later usage
 
-                row = Gtk.ListBoxRow()
+                row = Gtk.ListBoxRow() # allows the input shape to be added
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
                 row.add(hbox)
                 vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -45,7 +45,7 @@ class LayerWindow(Gtk.Window):
                 hbox.pack_start(self.InputShape, False, True, 0)
                 listbox.add(row)
 
-                row = Gtk.ListBoxRow()
+                row = Gtk.ListBoxRow() # allows for the specification of sparse / ragged data
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
                 row.add(hbox)
                 label = Gtk.Label(label="Advanced: ragged / sparse input", xalign=0)
@@ -59,7 +59,7 @@ class LayerWindow(Gtk.Window):
                 hbox.pack_start(self.misc, False, True, 0)
                 listbox.add(row)
 
-                row = Gtk.ListBoxRow()
+                row = Gtk.ListBoxRow() # if ragged: ragged rank
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
                 row.add(hbox)
                 vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -74,10 +74,10 @@ class LayerWindow(Gtk.Window):
                 listbox.add(row)
 
                 listbox.show_all()
-            elif type == "Dense / Fully connected":
-                self.CurrentLayerType = "Dense / Fully connected"
+            elif type == "Dense / Fully connected": # if the selected type is "Dense / Fully connected"
+                self.CurrentLayerType = "Dense / Fully connected" # sets the variable for later usage
 
-                row = Gtk.ListBoxRow()
+                row = Gtk.ListBoxRow() # allows user to specify number of layers
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
                 row.add(hbox)
                 vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -89,7 +89,7 @@ class LayerWindow(Gtk.Window):
                 hbox.pack_start(self.Layers, False, True, 0)
                 listbox.add(row)
 
-                row = Gtk.ListBoxRow()
+                row = Gtk.ListBoxRow() # allows user to select activation function
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
                 row.add(hbox)
                 label = Gtk.Label(label="Activation function", xalign=0)
@@ -111,7 +111,7 @@ class LayerWindow(Gtk.Window):
                 hbox.pack_start(self.activ, False, True, 0)
                 listbox.add(row)
 
-                row = Gtk.ListBoxRow()
+                row = Gtk.ListBoxRow() # allows user to specify the use of a bias (mx+c vs mx)
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
                 row.add(hbox)
                 label = Gtk.Label(label="Use Bias (y/n)", xalign=0)
@@ -121,10 +121,10 @@ class LayerWindow(Gtk.Window):
                 listbox.add(row)
 
                 listbox.show_all()
-            elif type == "Flatten":
-                self.CurrentLayerType = "Flatten"
+            elif type == "Flatten": # if the selected type is "Flatten"
+                self.CurrentLayerType = "Flatten" # sets the variable for later usage
 
-                row = Gtk.ListBoxRow()
+                row = Gtk.ListBoxRow() # tells user that there are no parameters
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=100)
                 row.add(hbox)
                 vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -134,10 +134,10 @@ class LayerWindow(Gtk.Window):
                 listbox.add(row)
 
                 listbox.show_all()
-            elif type == "Dropout":
-                self.CurrentLayerType = "Dropout"
+            elif type == "Dropout": # if the selected type is "Dropout"
+                self.CurrentLayerType = "Dropout" # sets the variable for later usage
 
-                row = Gtk.ListBoxRow()
+                row = Gtk.ListBoxRow() # allows user to specify dropout rate
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=100)
                 row.add(hbox)
                 vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -152,25 +152,25 @@ class LayerWindow(Gtk.Window):
                 listbox.show_all()
 
         listbox_2 = Gtk.ListBox()
-        items = ["Input", "Dense / Fully connected", "Flatten", "Dropout"]
+        items = ["Input", "Dense / Fully connected", "Flatten", "Dropout"] # list of possible input data types
 
         for item in items:
-            listbox_2.add(ListBoxRowWithData(item))
+            listbox_2.add(ListBoxRowWithData(item)) # displays all of the input data types
 
         def on_row_activated(listbox_widget, row):
-            listboxset(row.data)
+            listboxset(row.data) # when a data type is selected, the corresponding row is shown
 
         listbox_2.connect("row-activated", on_row_activated)
 
         self.box.pack_start(listbox_2, True, True, 0)
-        listbox_2.show_all()
+        listbox_2.show_all() # make the middle row visible after configuring it
 
 
-        buttonbox = Gtk.ListBox()
+        buttonbox = Gtk.ListBox() # final row created
         buttonbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.box.pack_start(buttonbox, True, True, 0)
 
-        row = Gtk.ListBoxRow()
+        row = Gtk.ListBoxRow() # adds the selected layer to the layers list
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=200)
         row.add(hbox)
         self.button1 = Gtk.Button(label="Add layer")
@@ -178,7 +178,7 @@ class LayerWindow(Gtk.Window):
         hbox.pack_start(self.button1, True, True, 0)
         buttonbox.add(row)
 
-        row = Gtk.ListBoxRow()
+        row = Gtk.ListBoxRow() # saves model to txt file
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=200)
         row.add(hbox)
         self.button1 = Gtk.Button(label="Save Model")
@@ -187,20 +187,20 @@ class LayerWindow(Gtk.Window):
         buttonbox.add(row)
 
 
-        scrolledwindow = Gtk.ScrolledWindow()
+        scrolledwindow = Gtk.ScrolledWindow() # scrolling winow for layers
         scrolledwindow.props.min_content_height = 300
         scrolledwindow.props.min_content_width = 350
         scrolledwindow.set_hexpand(True)
         scrolledwindow.set_vexpand(True)
         buttonbox.add(scrolledwindow)
 
-        self.grid = Gtk.Grid()
+        self.grid = Gtk.Grid() # grid for layers and some buttons
 
-        scrolledwindow.add(self.grid)
+        scrolledwindow.add(self.grid) # add grid to scrolled window
 
 
-    def on_button1_clicked(self, widget):
-        if self.CurrentLayerType == "Input":
+    def on_button1_clicked(self, widget): # adds layer to list
+        if self.CurrentLayerType == "Input": # fills in the pre-made structure for Input layers
             I = ""
             if self.misc.get_active_text() == "None":
                 I = f"tf.keras.Input({self.InputShape.get_text()}),"
@@ -212,7 +212,7 @@ class LayerWindow(Gtk.Window):
                 none = ["None" for i in range(int(self.RaggedRank.get_text()))]
                 I = f"tf.keras.Input({none}, ragged=True, ragged_rank={self.RaggedRank.get_text()}),"
             layers_list.append(I)
-        elif self.CurrentLayerType == "Dense / Fully connected":
+        elif self.CurrentLayerType == "Dense / Fully connected": # fills in the premade structure for dense layers
             try:
                 bias = False
                 if self.bias.get_text() == "y":
@@ -221,10 +221,10 @@ class LayerWindow(Gtk.Window):
                 layers_list.append(DF)
             except:
                 pass
-        elif self.CurrentLayerType == "Flatten":
+        elif self.CurrentLayerType == "Flatten": # adds a flatten layer
             F = "tf.keras.layers.Flatten(),"
             layers_list.append(F)
-        elif self.CurrentLayerType == "Dropout":
+        elif self.CurrentLayerType == "Dropout": # adds a dropout layer
             rate = self.Rate.get_text()
             try:
                 if float(rate) >= 0 and float(rate) <= 1:
@@ -234,26 +234,27 @@ class LayerWindow(Gtk.Window):
                 pass
         else:
             pass
-        self.refresh()
-    def on_button2_clicked(self, widget):
-        program = f""
-        program += f"model = tf.keras.Sequential([\n"
+        self.refresh() # fill in scrolling grid with new layer
 
-        for i in layers_list:
+    def on_button2_clicked(self, widget): # saves model
+        program = f""
+        program += f"model = tf.keras.Sequential([\n" # base sequential class
+
+        for i in layers_list: # stitches all layers together
             program += f"{i}\n"
 
         program += "])"
 
-        with open("model.txt", 'w') as f:
+        with open("model.txt", 'w') as f: # writes info to txt file
             f.write(program)
 
-    def refresh(self):
+    def refresh(self): # refresh list of layers - used in methods that change the list of layers
         children = self.grid.get_children()
-        for element in children:
+        for element in children: # empty the grid so another one can be made
             self.grid.remove(element)
 
         buttons = [[Gtk.Button(label="Delete"), Gtk.Button(label="Down"), Gtk.Button(label="Up"), i] for i in range(len(layers_list))]
-        for i in range(len(layers_list)):
+        for i in range(len(layers_list)): # sequentially adds layer, delete, up and down columns to grid in a new row
             textview = Gtk.TextView()
             textbuffer = textview.get_buffer()
             textbuffer.set_text(layers_list[i])
@@ -269,17 +270,19 @@ class LayerWindow(Gtk.Window):
             self.grid.attach_next_to(buttons[i][2], buttons[i][1], Gtk.PositionType.LEFT, 1, 1)
             self.grid.show_all()
 
-    def delete(self, widget, num):
+    def delete(self, widget, num): # remove a layer from the list
         layers_list.pop(num)
         self.refresh()
-    def up(self, widget, num):
+
+    def up(self, widget, num): # move a layer up in the list
         if num == len(layers_list):
             pass
         else:
             layers_list.insert(num+2, layers_list[num])
             layers_list.pop(num)
         self.refresh()
-    def down(self, widget, num):
+
+    def down(self, widget, num): # move a layer down in the list
         if num == 0:
             pass
         else:
